@@ -23,9 +23,20 @@ app.get('/', (req, res) => {
 client.connect(err => {
   const bookCollection = client.db("theBookHouse").collection("products");
   
+  app.get('/allProducts', (req, res) => {
+    bookCollection.find()
+    .toArray((err, items) => {
+      res.send(items)
+    })
+  })
+
   app.post('/addProduct', (req, res) => {
     const newProduct = req.body;
-    console.log("added product:", newProduct);
+    bookCollection.insertOne(newProduct)
+    .then(result => {
+      console.log(result);
+      res.send(result.insertedCount > 0);
+    })
   })
   
 });
