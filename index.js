@@ -23,6 +23,7 @@ app.get('/', (req, res) => {
 
 client.connect(err => {
   const bookCollection = client.db("theBookHouse").collection("products");
+  const placeOrderCollection = client.db("theBookHouse").collection("placeOrder");
   
   app.get('/allProducts', (req, res) => {
     bookCollection.find()
@@ -44,6 +45,20 @@ client.connect(err => {
     .then(result => {
       console.log(result);
       res.send(result.insertedCount > 0);
+    })
+  })
+
+  app.post('/orderPlace', (req, res) =>{
+    const newOrder = req.body;
+    placeOrderCollection.insertOne(newOrder)
+    .then(result => {
+      res.send(result.insertedCount > 0)
+    })
+  })
+  app.get('/allPlaceOrders', (req, res) => {
+    placeOrderCollection.find()
+    .toArray((err, items) => {
+      res.send(items)
     })
   })
   
