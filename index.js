@@ -44,7 +44,7 @@ client.connect(err => {
     bookCollection.insertOne(newProduct)
     .then(result => {
       console.log(result);
-      res.send(result.insertedCount > 0);
+      res.redirect('/')
     })
   })
 
@@ -52,7 +52,7 @@ client.connect(err => {
     const newOrder = req.body;
     placeOrderCollection.insertOne(newOrder)
     .then(result => {
-      res.send(result.insertedCount > 0)
+      res.redirect('/')
     })
   })
   app.get('/allPlaceOrders', (req, res) => {
@@ -61,6 +61,13 @@ client.connect(err => {
       res.send(items)
     })
   })
+
+  app.delete('/orderDelete/:id', (req, res) =>{
+    placeOrderCollection.deleteOne({_id: ObjectId(req.params.id)})
+    .then(result=>{
+        res.send(result.deletedCount > 0);
+    })
+})
   
 });
 
